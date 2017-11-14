@@ -64,22 +64,26 @@ int main(int argc, char **argv){
 
     } 
 
-	cout << "thread_number: " << thread_number << endl;
-	cout << "max_iteration: " << max_iteration << endl;
-	cout << "population: " << population << endl;
-	cout << "is load model: " << is_load_model << endl;
-	for(int i = 0; i < model.size(); i++){
-	   if (i == 0) cout << "model: ";
-	   cout << model[i] << " ";
-	   if (i == model.size()-1) cout << endl;
-	}
-	cout << "es sigma: " << es_sigma << endl;
-	cout << "es alpha: " << es_alpha << endl;
-		
 	Game2048Env problem = Game2048Env();
+    model.insert(model.begin(), problem.get_input_size());
+    model.push_back(problem.get_output_size());
+    
 	Agent ai = Agent(model);
 	if(is_load_model==true)	ai.load_model();
 	Es es = Es(thread_number, population, es_sigma, es_alpha);
+
+    cout << "thread_number: " << thread_number << endl;
+    cout << "max_iteration: " << max_iteration << endl;
+    cout << "population: " << population << endl;
+    cout << "is load model: " << is_load_model << endl;
+    for(int i = 0; i < model.size(); i++){
+       if (i == 0) cout << "model: ";
+       cout << model[i] << " ";
+       if (i == model.size()-1) cout << endl;
+    }
+    cout << "es sigma: " << es_sigma << endl;
+    cout << "es alpha: " << es_alpha << endl;
+
 	es.train(problem, &ai, max_iteration);
 
 	return 0;

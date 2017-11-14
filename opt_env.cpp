@@ -19,10 +19,10 @@ double OptEnv::evaluate(mat input_matrix){
 	// return input_matrix*OptEnv::problem_weight;
 }
 
-double OptEnv::evaluate_agent(Agent *ai){
+double OptEnv::evaluate_agent(Agent &ai){
 	mat x = randu<mat>(1,m_problem_size);
 
-	mat diff = ai->predict(x) - evaluate(x);
+	mat diff = ai.predict(x) - evaluate(x);
 	mat loss = diff.t() * diff;
 	return -loss(0,0);
 }

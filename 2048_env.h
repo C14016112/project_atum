@@ -10,13 +10,24 @@ class Game2048Env : public AbstractEnv{
 public:
 	Game2048Env();
 	~Game2048Env();
-	double evaluate_agent(Agent *ai);
-	double evaluate(mat input){return 0;};
-	inline Board get_board(){return m_b;};
+	double evaluate_agent(Agent& agent);
+	double evaluate(mat input){return 0;}
+	inline Board get_board(){return m_board;}
+
+
+	// copy_env() // constructor
+	inline void reset_env(){m_board.init();}
+	inline uint get_input_size(){return m_input_size;}
+	inline uint get_output_size(){return m_output_size;}
+	mat get_observation(); 
+	void do_action(mat action);
+
+
 private:
 	unsigned int m_seed;
-	Board m_b;
-	uint m_problem_size;
+	Board m_board;
+	uint m_input_size;
+	uint m_output_size;
 	
 };
 

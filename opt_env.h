@@ -17,7 +17,7 @@ class OptEnv : public AbstractEnv{
 		double evaluate(mat input_matrix);
 		OptEnv(uint problme_size);
 		~OptEnv();
-		double evaluate_agent(Agent *ai);
+		double evaluate_agent(Agent &ai);
 
 };
 

@@ -16,17 +16,11 @@ public:
 	~Agent();
 	void build_model();
 	mat predict(mat input_matrix);
-	mat* get_weight();
-	void set_weight(mat* new_weight);
-	mat* get_bias();
-	void set_bias(mat* new_bias);
-	mat *create_initial_bias();
-	mat *create_initial_weight();
-	void add_weight(mat* added_weight);
-	void add_bias(mat* added_bias);
-	void copy_agent(Agent* new_agent);
-	void initialize_weight(mat* initial_weight);
-	void initialize_bias(mat* initial_bias);
+	vector<mat> get_model_weight();
+	void set_model_weight(vector<mat> new_model_weight);
+	vector<mat> create_initial_model_weight();
+	void add_model_weight(vector<mat> added_weight);
+	void copy_agent(Agent& new_agent);
 	inline uint get_problem_size(){ return m_problem_size;}
 	inline void set_problem_size(uint size){ m_problem_size = size;}
 	inline vector<int> get_model_width(){ return m_model_width;}
@@ -35,10 +29,11 @@ public:
 	mat relu(mat);
 
 private:
-	mat *m_weight;
-	mat *m_bias;
+	// mat *m_weight;
+	// mat *m_bias;
 	uint m_problem_size;
 	vector<int> m_model_width;
+	vector<mat> m_model_weight;
 
 };
 #endif

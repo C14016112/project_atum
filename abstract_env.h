@@ -15,7 +15,7 @@ class AbstractEnv{
 		AbstractEnv(){};
 		virtual ~AbstractEnv(){};
 		// virtual double evaluate(mat input_matrix) = 0;
-		virtual double evaluate_agent(Agent *ai) = 0;
+		virtual double evaluate_agent(Agent &ai) = 0;
 		
 };
 

@@ -32,16 +32,20 @@ void Es::write_log(int cur_iteration, double reward_mean){
 
 void Es::train(AbstractEnv & problem, Agent * ai, uint max_iteration){
 
-	mat ** weight_noise = new mat*[m_population_number];
-	mat ** bias_noise = new mat*[m_population_number];
+	// mat ** weight_noise = new mat*[m_population_number];
 	// Abstract_env *envs = new Abstract_env[population_number];
+
 	Game2048Env* envs = new Game2048Env[m_population_number];
+	vector<vector<mat>> model_weight_noise;
 
 	struct timeval startT;
 	gettimeofday(&startT, NULL);
 	m_start_time = startT.tv_sec + (1.0/1000000) * startT.tv_usec;
 	
 	for (int i = 0; i < max_iteration; i++){
+		model_weight_noise.clear();
+		for(int i = 0; i < m_population_number; i++) model_weight_noise.push_back(ai->create_initial_model_weight());
+
 		mat rewards = zeros(m_population_number);
 
 		// simulation 
@@ -49,20 +53,14 @@ void Es::train(AbstractEnv & problem, Agent * ai, uint max_iteration){
 		for(int j = 0; j < m_population_number; j++){
 			if(i == 0 && j == 0) cout << "thread number: " << omp_get_num_threads() << endl;
 			Agent noised_ai = Agent(ai->get_model_width());
-			ai->copy_agent(&noised_ai);
+			ai->copy_agent(noised_ai);
 
+			for(int k = 0; k < noised_ai.get_model_weight().size(); k++)
+				model_weight_noise[j][k] *= m_sigma;
 
-			weight_noise[j] = noised_ai.create_initial_weight();
-			bias_noise[j] = noised_ai.create_initial_bias();
+			noised_ai.add_model_weight(model_weight_noise[j]);
 
-			for(int k = 0; k < noised_ai.get_model_width().size(); k++){
-				weight_noise[j][k] *= m_sigma;
-				bias_noise[j][k] *= m_sigma;
-			}
-			noised_ai.add_weight(weight_noise[j]);
-			noised_ai.add_bias(bias_noise[j]);
-
-			double reward = envs[j].evaluate_agent(&noised_ai);
+			double reward = envs[j].evaluate_agent(noised_ai);
 			rewards(j) = reward;
 		}
 		
@@ -76,26 +74,15 @@ void Es::train(AbstractEnv & problem, Agent * ai, uint max_iteration){
 
 		// update 
 		for(int j = 0; j < m_population_number; j++){
-			for(int k = 0; k < ai->get_model_width().size(); k++){
-				weight_noise[j][k] *= m_alpha/(m_population_number*m_sigma*m_sigma)*A[j];
-				bias_noise[j][k] *= m_alpha/(m_population_number*m_sigma*m_sigma)*A[j];
+			for(int k = 0; k < ai->get_model_weight().size(); k++){
+				model_weight_noise[j][k] *= m_alpha/(m_population_number*m_sigma*m_sigma)*A[j];
 			}
-			ai->add_weight(weight_noise[j]);
-			ai->add_bias(bias_noise[j]);
+			ai->add_model_weight(model_weight_noise[j]);
 		}
-		for(int j = 0; j < m_population_number; j++){
-			delete [] weight_noise[j];
-			delete [] bias_noise[j];
-		}
-		if(i % 100 == 0 && i > 0)
+		if(i % 10 == 0 && i > 0)
 			ai->save_model();
 	}
 	
-	// mat x = randu<mat>(1, ai.get_problem_size());
-	// cout << x.t() << " " << problem.evaluate(x) << " " << ai.predict(x) << endl;
-
-	delete [] weight_noise;
-	delete [] bias_noise;
 	delete [] envs;
 
 }
