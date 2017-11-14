@@ -298,4 +298,7 @@ private:
 	float value;
 	int reward;
 };
+
+typedef board Board;
+typedef state State;
 #endif

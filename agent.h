@@ -9,11 +9,11 @@
 using std::vector;
 using namespace arma;
 
-class agent{
+class Agent{
 
 public:
-	agent(vector<int> model_wid);
-	~agent();
+	Agent(vector<int> model_wid);
+	~Agent();
 	void build_model();
 	mat predict(mat input_matrix);
 	mat* get_weight();
@@ -24,21 +24,21 @@ public:
 	mat *create_initial_weight();
 	void add_weight(mat* added_weight);
 	void add_bias(mat* added_bias);
-	void copy_agent(agent* new_agent);
+	void copy_agent(Agent* new_agent);
 	void initialize_weight(mat* initial_weight);
 	void initialize_bias(mat* initial_bias);
-	inline uint get_problem_size(){ return problem_size;}
-	inline void set_problem_size(uint size){ problem_size = size;}
-	inline vector<int> get_model_width(){ return model_width;}
+	inline uint get_problem_size(){ return m_problem_size;}
+	inline void set_problem_size(uint size){ m_problem_size = size;}
+	inline vector<int> get_model_width(){ return m_model_width;}
 	void save_model();
 	void load_model();
+	mat relu(mat);
 
 private:
-	mat *weight;
-	mat *bias;
-	uint problem_size;
-	vector<int> model_width;
+	mat *m_weight;
+	mat *m_bias;
+	uint m_problem_size;
+	vector<int> m_model_width;
 
-	mat relu(mat);
 };
 #endif

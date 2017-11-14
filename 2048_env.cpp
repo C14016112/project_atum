@@ -1,30 +1,30 @@
 ﻿#include "2048_env.h"
 
-game_2048_env::game_2048_env(){
-	__asm__ __volatile__("rdtsc" : "=a" (seed));
-	std::srand(seed);
-	game_2048_env::problem_size = 16;
+Game2048Env::Game2048Env(){
+	__asm__ __volatile__("rdtsc" : "=a" (m_seed));
+	std::srand(m_seed);
+	m_problem_size = 16;
 }
 
-game_2048_env::~game_2048_env(){
+Game2048Env::~Game2048Env(){
 	
 }
 
-double game_2048_env::evaluate_agent(agent *ai){
+double Game2048Env::evaluate_agent(Agent *ai){
 	// play an episode
 	int score = 0;
-	b.init();
+	m_b.init();
 
 	while (true) {
 		// try to find a best move
-		state current_state(b);
+		State current_state(m_b);
 
 		
 		//current_state.PrintState();
 		double best_val = -10000000;
 		int best_move = 0;
 		for(int i = 1; i < 4; i++){
-			state tmp_state = current_state;
+			State tmp_state = current_state;
 			int reward = tmp_state.move(i);
 			if (reward == -1) continue;
 			mat A = zeros(16);
@@ -36,13 +36,13 @@ double game_2048_env::evaluate_agent(agent *ai){
 			}
 		}
 
-		state best_next_state = current_state;
+		State best_next_state = current_state;
 		best_next_state.move(best_move);
 
 		if (best_next_state.get_reward() != -1) {
-			b = best_next_state.get_board();
+			m_b = best_next_state.get_board();
 			score += best_next_state.get_reward();
-			b.add_random_tile();
+			m_b.add_random_tile();
 		}
 		// game over
 		else 

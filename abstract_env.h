@@ -7,15 +7,15 @@
 
 // using namespace arma;
 
-class Abstract_env{
+class AbstractEnv{
 	protected:
 		uint problem_size;
 
 	public:
-		Abstract_env(){};
-		virtual ~Abstract_env(){};
+		AbstractEnv(){};
+		virtual ~AbstractEnv(){};
 		// virtual double evaluate(mat input_matrix) = 0;
-		virtual double evaluate_agent(agent *ai) = 0;
+		virtual double evaluate_agent(Agent *ai) = 0;
 		
 };
 

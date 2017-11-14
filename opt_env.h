@@ -8,16 +8,16 @@
 
 using namespace arma;
 
-class opt_env : public Abstract_env{
+class OptEnv : public AbstractEnv{
 	private:
 		// mat problem_weight;
-		uint problem_size;
+		uint m_problem_size;
 
 	public:
 		double evaluate(mat input_matrix);
-		opt_env(uint problme_size);
-		~opt_env();
-		double evaluate_agent(agent *ai);
+		OptEnv(uint problme_size);
+		~OptEnv();
+		double evaluate_agent(Agent *ai);
 
 };
 

@@ -6,17 +6,17 @@
 #include "abstract_env.h"
 #include "2048_board.h"
 
-class game_2048_env : public Abstract_env{
+class Game2048Env : public AbstractEnv{
 public:
-	game_2048_env();
-	~game_2048_env();
-	double evaluate_agent(agent *AI);
+	Game2048Env();
+	~Game2048Env();
+	double evaluate_agent(Agent *ai);
 	double evaluate(mat input){return 0;};
-	inline board get_board(){return b;};
+	inline Board get_board(){return m_b;};
 private:
-	unsigned int seed;
-	board b;
-	uint problem_size;
+	unsigned int m_seed;
+	Board m_b;
+	uint m_problem_size;
 	
 };
 

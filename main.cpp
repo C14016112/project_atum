@@ -76,11 +76,11 @@ int main(int argc, char **argv){
 	cout << "es sigma: " << es_sigma << endl;
 	cout << "es alpha: " << es_alpha << endl;
 		
-	game_2048_env problem = game_2048_env();
-	agent AI = agent(model);
-	if(is_load_model==true)	AI.load_model();
-	es ES = es(thread_number, population, es_sigma, es_alpha);
-	ES.train(problem, &AI, max_iteration);
+	Game2048Env problem = Game2048Env();
+	Agent ai = Agent(model);
+	if(is_load_model==true)	ai.load_model();
+	Es es = Es(thread_number, population, es_sigma, es_alpha);
+	es.train(problem, &ai, max_iteration);
 
 	return 0;
 }
