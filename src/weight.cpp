@@ -83,3 +83,21 @@ Weights::~Weights(){
 	m_weights_vector.clear();
 }
 
+Weights& Weights::operator=(const Weights weight){
+    m_weights_vector = weight.m_weights_vector;
+    return *this;
+}
+
+Weights& Weights::operator*=(const double scalar){
+    for(int i = 0; i < get_count(); i++){
+        m_weights_vector[i] *= scalar;
+    }
+    return *this;
+}
+
+Weights& Weights::operator+=(const Weights weight){
+	for(int i = 0; i < get_count(); i++){
+		m_weights_vector[i] += weight.m_weights_vector[i];
+	}
+    return *this;
+}

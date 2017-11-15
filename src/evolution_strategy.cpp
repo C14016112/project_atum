@@ -53,7 +53,11 @@ void EvolutionStrategy::train(AbstractEnv & problem, Agent* ai, uint max_iterati
 			Agent noised_ai(*ai);
 
 			noised_weights[j] = Weights(ai->get_model_weights(), GAUSSIAN);
-			noised_weights[j].multiply_scalar(m_sigma);
+			// noised_weights[j].multiply_scalar(m_sigma);
+			// noised_weights[j] = noised_weights[j];
+			// noised_weights[j] *= 1.0;
+			noised_weights[j] *= m_sigma;
+
 			noised_ai.add_model_weights(noised_weights[j]);
 
 			double reward = envs[j].evaluate_agent(noised_ai);
@@ -68,7 +72,8 @@ void EvolutionStrategy::train(AbstractEnv & problem, Agent* ai, uint max_iterati
 
 		// update 
 		for(int j = 0; j < m_population_number; j++){
-			noised_weights[j].multiply_scalar(m_alpha*normalized_retrun[j]/(m_population_number*m_sigma*m_sigma));
+			// noised_weights[j].multiply_scalar(m_alpha*normalized_retrun[j]/(m_population_number*m_sigma*m_sigma));
+			noised_weights[j] *= m_alpha*normalized_retrun[j]/(m_population_number*m_sigma*m_sigma);
 			ai->add_model_weights(noised_weights[j]);
 		}
 		

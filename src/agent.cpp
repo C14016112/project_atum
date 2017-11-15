@@ -36,9 +36,10 @@ void Agent::copy_agent(Agent *new_agent){
 }
 
 void Agent::add_model_weights(Weights& added_model_weights){
-	for(int i = 0; i < m_model_weights.get_count(); i++){
-		m_model_weights[i] += added_model_weights[i];
-	}
+	m_model_weights += added_model_weights;
+	// for(int i = 0; i < m_model_weights.get_count(); i++){
+	// 	m_model_weights[i] += added_model_weights[i];
+	// }
 }
 
 void Agent::save_agent(){
