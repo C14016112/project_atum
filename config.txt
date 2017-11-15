@@ -1,5 +1,5 @@
-thread_number : 10
-max_iteration : 50000000
+thread_number : 10 
+max_iteration : 100000
 population : 100
 model : 256 256 256
 is_load_model : 0 

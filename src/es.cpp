@@ -41,12 +41,14 @@ void Es::train(AbstractEnv & problem, Agent * ai, uint max_iteration){
 	struct timeval startT;
 	gettimeofday(&startT, NULL);
 	m_start_time = startT.tv_sec + (1.0/1000000) * startT.tv_usec;
-	
-	for (int i = 0; i < max_iteration; i++){
-		model_weight_noise.clear();
-		for(int i = 0; i < m_population_number; i++) model_weight_noise.push_back(ai->create_initial_model_weight());
+	mat normalized_retrun;
+	mat rewards;
+	for(int i = 0; i < m_population_number; i++) model_weight_noise.push_back(ai->create_initial_model_weight());
 
-		mat rewards = zeros(m_population_number);
+	for (int i = 0; i < max_iteration; i++){
+		
+		// model_weight_noise.clear();
+		rewards = zeros(m_population_number);
 
 		// simulation 
 		#pragma omp parallel for num_threads(m_thread_number)
@@ -55,6 +57,7 @@ void Es::train(AbstractEnv & problem, Agent * ai, uint max_iteration){
 			Agent noised_ai = Agent(ai->get_model_width());
 			ai->copy_agent(noised_ai);
 
+			model_weight_noise[j] = noised_ai.create_initial_model_weight();
 			for(int k = 0; k < noised_ai.get_model_weight().size(); k++)
 				model_weight_noise[j][k] *= m_sigma;
 
@@ -64,23 +67,23 @@ void Es::train(AbstractEnv & problem, Agent * ai, uint max_iteration){
 			rewards(j) = reward;
 		}
 		
-
 		double reward_mean = mean(mean(rewards));
 		mat reward_m = stddev(rewards);
 		double reward_std = reward_m(0,0);
-		mat A = (rewards - reward_mean)/reward_std;
-
-		Es::write_log(i, reward_mean);
+		normalized_retrun = (rewards - reward_mean)/reward_std;
+		if(i%10 == 0) Es::write_log(i, reward_mean);	
 
 		// update 
 		for(int j = 0; j < m_population_number; j++){
+			#pragma omp parallel for num_threads(m_thread_number)
 			for(int k = 0; k < ai->get_model_weight().size(); k++){
-				model_weight_noise[j][k] *= m_alpha/(m_population_number*m_sigma*m_sigma)*A[j];
+				model_weight_noise[j][k] *= m_alpha/(m_population_number*m_sigma*m_sigma)*normalized_retrun[j];
 			}
 			ai->add_model_weight(model_weight_noise[j]);
 		}
-		if(i % 10 == 0 && i > 0)
-			ai->save_model();
+		
+		
+		if(i % 10 == 0 && i > 0) ai->save_model();
 	}
 	
 	delete [] envs;
