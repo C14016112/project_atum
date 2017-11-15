@@ -1,15 +1,14 @@
-#include "agent.h"
-#include <armadillo>
 #include <iostream>
 #include <vector>
 #include <sys/time.h>
 #include <string>
 #include <omp.h>
+#include "agent.h"
+#include "matrix.h"
 #include "opt_env.h"
-#include "es.h"
+#include "evolution_strategy.h"
 #include "2048_env.h"
 
-using namespace arma;
 using std::cout;
 using std::endl;
 using std::string;
@@ -69,8 +68,8 @@ int main(int argc, char **argv){
     model.push_back(problem.get_output_size());
     
 	Agent ai = Agent(model);
-	if(is_load_model==true)	ai.load_model();
-	Es es = Es(thread_number, population, es_sigma, es_alpha);
+	if(is_load_model==true)	ai.load_agent();
+	EvolutionStrategy es = EvolutionStrategy(thread_number, population, es_sigma, es_alpha);
 
     cout << "thread_number: " << thread_number << endl;
     cout << "max_iteration: " << max_iteration << endl;

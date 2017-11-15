@@ -1,39 +1,32 @@
 #ifndef __AGENT_H__
 #define __AGENT_H__
 
-#include <armadillo>
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include "matrix.h"
+#include "weight.h"
 
 using std::vector;
-using namespace arma;
 
 class Agent{
 
 public:
-	Agent(vector<int> model_wid);
+	Agent(const vector<int> &model_wid);
+	Agent(const Agent& agent);
 	~Agent();
 	void build_model();
-	mat predict(mat input_matrix);
-	vector<mat> get_model_weight();
-	void set_model_weight(vector<mat> new_model_weight);
-	vector<mat> create_initial_model_weight();
-	void add_model_weight(vector<mat> added_weight);
-	void copy_agent(Agent& new_agent);
-	inline uint get_problem_size(){ return m_problem_size;}
-	inline void set_problem_size(uint size){ m_problem_size = size;}
-	inline vector<int> get_model_width(){ return m_model_width;}
-	void save_model();
-	void load_model();
-	mat relu(mat);
+	Matrix predict(Matrix input_matrix);
+	void add_model_weights(Weights& added_model_weights);
+	void copy_agent(Agent *new_agent);
+	void save_agent();
+	void load_agent();
+	Matrix relu(Matrix);
+
+	inline const Weights& get_model_weights() const {return m_model_weights;}
 
 private:
-	// mat *m_weight;
-	// mat *m_bias;
-	uint m_problem_size;
-	vector<int> m_model_width;
-	vector<mat> m_model_weight;
+	Weights m_model_weights;
 
 };
 #endif

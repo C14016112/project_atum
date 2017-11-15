@@ -1,7 +1,7 @@
 #ifndef __2048_ENV_H__
 #define __2048_ENV_H__
 
-#include <armadillo>
+#include "matrix.h"
 #include "agent.h"
 #include "abstract_env.h"
 #include "2048_board.h"
@@ -11,7 +11,7 @@ public:
 	Game2048Env();
 	~Game2048Env();
 	double evaluate_agent(Agent& agent);
-	double evaluate(mat input){return 0;}
+	double evaluate(Matrix input){return 0;}
 	inline Board get_board(){return m_board;}
 
 
@@ -19,8 +19,8 @@ public:
 	inline void reset_env(){m_board.init();}
 	inline uint get_input_size(){return m_input_size;}
 	inline uint get_output_size(){return m_output_size;}
-	mat get_observation(); 
-	void do_action(mat action);
+	Matrix get_observation(); 
+	void do_action(Matrix action);
 
 
 private:
