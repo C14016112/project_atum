@@ -49,6 +49,12 @@ double Game2048Env::evaluate_agent(Agent& agent){
 		else 
 			break;
 	}
+#ifdef DEBUG
+    int max_tile = 0;
+    State tmp_state(m_board);
+    for(int i = 0; i < 16; ++i) if(m_board.at(i) > max_tile) max_tile = m_board.at(i);
+    std::cout << "max tile: " << (2<<max_tile) << " " << score << std::endl;
+#endif
 	return (double)score;
 }
 	
