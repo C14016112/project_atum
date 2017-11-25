@@ -11,7 +11,8 @@ class AbstractEnv{
 		AbstractEnv(){};
 		virtual ~AbstractEnv(){};
 		virtual double evaluate_agent(Agent &ai) = 0;
-		
+		uint32_t get_input_size() const;
+        uint32_t get_output_size() const;
 };
 
 #endif

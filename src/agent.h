@@ -4,30 +4,37 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <string>
 #include "matrix.h"
 #include "weight.h"
-
-using std::vector;
+#include "abstract_agent.h"
 
 class Agent : public AbstractAgent{
 public:
-    Agent(const vector<int> &model_wid);
+    //Agent(const AbstractEnv &env, const std::string &filename);
+    Agent(const std::vector<int> &model_wid);
     Agent(const Agent& agent);
+    Agent();
     ~Agent();
-    void build_model();
-    Matrix predict(Matrix input_matrix);
-    void add_model_weights(Weights& added_model_weights);
-    void copy_agent(Agent *new_agent);
 
-    void dump_config(const std::string &filename) const;
-    void save_agent();
-    void load_agent();
+    Agent& operator=(const Agent &);
+    void copy_agent(Agent *new_agent);
+    void build_model();
+    Matrix predict(const Matrix input_matrix);    // same as evaluate_action?
+    virtual Matrix evaluate_action(const Matrix &observation);
+
+    virtual void add_weights(const Weights &offsets);
+
+    virtual void dump_config(const std::string &filename) const;
     Matrix relu(Matrix);    // TODO: might need to pull into other module
 
-    inline const Weights& get_model_weights() const {return m_model_weights;}
+    // void save_agent(const std::string &filename);
+    // void load_agent(const std::string &filename);
 
+    inline const Weights& get_model_weights() const {return m_model_weights;}
 private:
-    Weights m_model_weights;
+    void load_config_layer_(const std::string &filename, std::vector<int> &layers);
+    void dump_config_layer_(const std::string &filename) const;
 };
 
 #endif

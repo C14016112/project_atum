@@ -14,7 +14,7 @@ $(OBJ)/2048_env.o: ${SOURCE}/2048_env.cpp ${SOURCE}/2048_env.h
 	$(CC) $(SOURCE)/2048_env.cpp -o $(OBJ)/2048_env.o $(OFLAGS)
 $(OBJ)/opt_env.o: ${SOURCE}/opt_env.cpp ${SOURCE}/opt_env.h
 	$(CC) $(SOURCE)/opt_env.cpp -o $(OBJ)/opt_env.o $(OFLAGS)
-$(OBJ)/agent.o: ${SOURCE}/agent.cpp ${SOURCE}/agent.h
+$(OBJ)/agent.o: ${SOURCE}/agent.cpp ${SOURCE}/agent.h ${SOURCE}/abstract_agent.h
 	$(CC) $(SOURCE)/agent.cpp -o $(OBJ)/agent.o $(OFLAGS)
 $(OBJ)/evolution_strategy.o: ${SOURCE}/evolution_strategy.cpp ${SOURCE}/evolution_strategy.h
 	$(CC) $(SOURCE)/evolution_strategy.cpp -o $(OBJ)/evolution_strategy.o $(OFLAGS)

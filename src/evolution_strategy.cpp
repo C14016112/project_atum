@@ -58,7 +58,7 @@ void EvolutionStrategy::train(AbstractEnv & problem, Agent* ai, uint max_iterati
 			// noised_weights[j] *= 1.0;
 			noised_weights[j] *= m_sigma;
 
-			noised_ai.add_model_weights(noised_weights[j]);
+			noised_ai.add_weights(noised_weights[j]);
 
 			double reward = envs[j].evaluate_agent(noised_ai);
 			rewards(j) = reward;
@@ -74,7 +74,7 @@ void EvolutionStrategy::train(AbstractEnv & problem, Agent* ai, uint max_iterati
 		for(int j = 0; j < m_population_number; j++){
 			// noised_weights[j].multiply_scalar(m_alpha*normalized_retrun[j]/(m_population_number*m_sigma*m_sigma));
 			noised_weights[j] *= m_alpha*normalized_retrun[j]/(m_population_number*m_sigma*m_sigma);
-			ai->add_model_weights(noised_weights[j]);
+			ai->add_weights(noised_weights[j]);
 		}
 		
 		

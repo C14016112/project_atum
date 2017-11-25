@@ -22,10 +22,13 @@ public:
     inline uint get_count() const { return m_weights_vector.size(); }
     //inline void set_weights_vector(const Weights& weights) { m_weights_vector = weights.m_weights_vector;}
     inline Matrix &operator[] (const int x) { return m_weights_vector[x]; }
+    inline Matrix operator[] (const int x) const { return m_weights_vector[x]; }
     Weights& operator=(const Weights weight);
     Weights& operator*=(const double scalar);
     Weights& operator+=(const Weights weight);
     // overload [], +, -, *, / operators
+
+    // Save, Load
 private:
     vector<Matrix> m_weights_vector;
 };
