@@ -30,7 +30,7 @@ void EvolutionStrategy::write_log(int cur_iteration, double reward_mean){
 	fclose(m_csv_log_file);
 }
 
-void EvolutionStrategy::train(AbstractEnv & problem, Agent* ai, uint max_iteration){
+void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iteration){
 
 	Game2048Env* envs = new Game2048Env[m_population_number];
 	vector<Weights> noised_weights;
@@ -42,7 +42,8 @@ void EvolutionStrategy::train(AbstractEnv & problem, Agent* ai, uint max_iterati
 	Matrix rewards;
 
 	// #pragma omp parallel for num_threads(m_thread_number)
-	for(int i = 0; i < m_population_number; i++) noised_weights.push_back(Weights(ai->get_model_weights(), GAUSSIAN));
+	for(int i = 0; i < m_population_number; i++)
+        noised_weights.push_back(Weights(ai->get_weights(), Weights::GAUSSIAN));
 	
 	for (int i = 0; i < max_iteration; i++){
 		rewards = zeros(m_population_number);
@@ -50,9 +51,9 @@ void EvolutionStrategy::train(AbstractEnv & problem, Agent* ai, uint max_iterati
 		#pragma omp parallel for num_threads(m_thread_number)
 		for(int j = 0; j < m_population_number; j++){
 			if(i == 0 && j == 0) cout << "thread number: " << omp_get_num_threads() << endl;
-			Agent noised_ai(*ai);
+			DnnAgent noised_ai(*ai);
 
-			noised_weights[j] = Weights(ai->get_model_weights(), GAUSSIAN);
+			noised_weights[j] = Weights(ai->get_weights(), Weights::GAUSSIAN);
 			// noised_weights[j].multiply_scalar(m_sigma);
 			// noised_weights[j] = noised_weights[j];
 			// noised_weights[j] *= 1.0;

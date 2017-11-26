@@ -1,6 +1,9 @@
 #include "weight.h"
+#include <fstream>
+#include <string>
 
-Weights::Weights(const Weights& weights, InitType type){
+Weights::Weights(const Weights& weights, Weights::InitType type)
+{
     if (type == COPY){
         for(int i = 0; i < weights.get_count(); i++){
             m_weights_vector.push_back( Matrix(weights.m_weights_vector[i]) );
@@ -28,7 +31,10 @@ Weights::Weights(const Weights& weights, InitType type){
     }
 }
 
-Weights::Weights(const vector<int>& model_architecture, InitType type, bool with_bias){
+Weights::Weights(const vector<int>& model_architecture,
+                 InitType type,
+                 bool with_bias)
+{
     // TODO: Try to simplify
     if (type == COPY)   // COPY mode is not allowed
     {
@@ -121,4 +127,30 @@ Weights& Weights::operator+=(const Weights weight){
         m_weights_vector[i] += weight.m_weights_vector[i];
     }
     return *this;
+}
+
+void Weights::save(const std::string &filename) const
+{
+    std::ofstream ofs(filename, std::ofstream::out);
+    if (ofs.is_open()) {
+        for (int i = 0; i < get_count(); i++)
+            m_weights_vector[i].save(ofs);
+    }
+    else {
+        std::cout << "[ERROR] Failed to open " << filename << std::endl;
+        exit(EXIT_FAILURE);
+    }
+}
+
+void Weights::load(const std::string &filename)
+{
+    std::ifstream ifs(filename, std::ifstream::in);
+    if (ifs.is_open()) {
+        for (int i = 0; i < get_count(); ++i)   // originally get_count() - 1, not sure why
+            m_weights_vector[i].load(ifs);
+    }
+    else {
+        std::cout << "[ERROR] Failed to open " << filename << std::endl;
+        exit(EXIT_FAILURE);
+    }
 }

@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <string>
 #include <omp.h>
-#include "agent.h"
+#include "dnn_agent.h"
 #include "matrix.h"
 #include "opt_env.h"
 #include "evolution_strategy.h"
@@ -67,7 +67,7 @@ int main(int argc, char **argv){
     model.insert(model.begin(), problem.get_input_size());
     model.push_back(problem.get_output_size());
 
-    Agent ai = Agent(model);
+    DnnAgent ai(model);
     if(is_load_model==true) ai.load_agent();
     EvolutionStrategy es = EvolutionStrategy(thread_number, population, es_sigma, es_alpha);
 

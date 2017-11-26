@@ -4,7 +4,7 @@
 #include "matrix.h"
 #include <iostream>
 #include "abstract_env.h"
-#include "agent.h"
+#include "abstract_agent.h"
 
 class OptEnv : public AbstractEnv{
 	private:
@@ -15,7 +15,7 @@ class OptEnv : public AbstractEnv{
 		double evaluate(Matrix input_matrix);
 		OptEnv(uint problme_size);
 		~OptEnv();
-		double evaluate_agent(Agent &ai);
+		double evaluate_agent(AbstractAgent &ai);
 
 };
 
