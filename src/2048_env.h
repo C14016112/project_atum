@@ -2,7 +2,7 @@
 #define __2048_ENV_H__
 
 #include "matrix.h"
-#include "agent.h"
+#include "abstract_agent.h"
 #include "abstract_env.h"
 #include "2048_board.h"
 
@@ -10,7 +10,7 @@ class Game2048Env : public AbstractEnv{
 public:
 	Game2048Env();
 	~Game2048Env();
-	double evaluate_agent(Agent& agent);
+	double evaluate_agent(AbstractAgent& agent);
 	double evaluate(Matrix input){return 0;}
 	inline Board get_board(){return m_board;}
 

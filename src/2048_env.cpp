@@ -11,7 +11,7 @@ Game2048Env::~Game2048Env(){
 	
 }
 
-double Game2048Env::evaluate_agent(Agent& agent){
+double Game2048Env::evaluate_agent(AbstractAgent& agent){
 	// play an episode
 	int score = 0;
 	m_board.init();
@@ -30,7 +30,7 @@ double Game2048Env::evaluate_agent(Agent& agent){
 			if (reward == -1) continue;
 			mat A = zeros(16);
 			for(int j = 0; j < 16; j++) A(j) = tmp_state.get_board().at(j);
-			double val = (double)agent.predict(A.t())(0) + reward;
+			double val = (double)agent.evaluate_action(A.t())(0) + reward;
 			if (val > best_val){
 				best_val = val;
 				best_move = i;
@@ -49,6 +49,12 @@ double Game2048Env::evaluate_agent(Agent& agent){
 		else 
 			break;
 	}
+#ifdef DEBUG
+    int max_tile = 0;
+    State tmp_state(m_board);
+    for(int i = 0; i < 16; ++i) if(m_board.at(i) > max_tile) max_tile = m_board.at(i);
+    std::cout << "max tile: " << (2<<max_tile) << " " << score << std::endl;
+#endif
 	return (double)score;
 }
 	
