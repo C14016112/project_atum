@@ -7,15 +7,15 @@
 #include "abstract_agent.h"
 
 class OptEnv : public AbstractEnv{
-	private:
-		// mat problem_weight;
-		uint m_problem_size;
+    private:
+        // mat problem_weight;
+        uint m_problem_size;
 
-	public:
-		double evaluate(Matrix input_matrix);
-		OptEnv(uint problme_size);
-		~OptEnv();
-		double evaluate_agent(AbstractAgent &ai);
+    public:
+        double evaluate(Matrix input_matrix);
+        OptEnv(uint problme_size);
+        ~OptEnv();
+        double evaluate_agent(AbstractAgent &ai);
 
 };
 
