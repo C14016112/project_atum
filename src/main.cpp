@@ -1,11 +1,11 @@
 #include <iostream>
 #include <vector>
-#include <sys/time.h>
 #include <string>
 #include <omp.h>
 #include "dnn_agent.h"
 #include "matrix.h"
 #include "opt_env.h"
+#include "fit_env.h"
 #include "evolution_strategy.h"
 #include "2048_env.h"
 #include "utils.h"
@@ -67,6 +67,8 @@ int main(int argc, char **argv){
     }
 
     Game2048Env problem = Game2048Env();
+    // FitEnv problem(10, 3);
+    // OptEnv problem(3);
     model.insert(model.begin(), problem.get_input_size());
     model.push_back(problem.get_output_size());
 

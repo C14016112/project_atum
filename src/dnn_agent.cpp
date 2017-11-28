@@ -17,7 +17,8 @@ Matrix DnnAgent::evaluate_action(const Matrix &observation) const
 {
     Matrix result = observation;
     for(int i = 0; i < m_model_weights.get_count()-1; i+=2) {
-        result = result*m_model_weights[i] + m_model_weights[i+1];
+        result = result*m_model_weights[i];
+        result.each_row() += m_model_weights[i+1];
         if(i != m_model_weights.get_count()-2)
             result = DnnAgent::relu(result);
     }

@@ -3,6 +3,7 @@
 
 #include "matrix.h"
 #include "abstract_env.h"
+#include "math_functions.h"
 
 // FitEnv has a black box function f(x) and agent represents another function g(x)
 // Sample `batch_size` points and fit these points to f(x) and g(x) respectively.
@@ -11,7 +12,7 @@ class FitEnv : public AbstractEnv{
     public:
         explicit FitEnv(uint32_t batch_size, uint32_t input_size=2);
         double evaluate_agent(const AbstractAgent &agent, bool verbose=false) const override;
-        static inline Matrix get_function_output(const Matrix &input) { return 0.5 * arma::sum(arma::pow(input,4) - 16* arma::pow(input,2) + 5*input, 1); }
+        static inline Matrix get_function_output(const Matrix &input) { return function::styblinski_tang(input); }
     protected:
         uint32_t m_batch_size;
 };

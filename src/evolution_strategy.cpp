@@ -1,4 +1,5 @@
 #include "evolution_strategy.h"
+#include "utils.h"
 
 EvolutionStrategy::EvolutionStrategy(uint thread_num, uint pop_num, double param_sigma, double param_alpha){
     m_thread_number = thread_num;
@@ -20,9 +21,7 @@ EvolutionStrategy::~EvolutionStrategy(){
 }
 
 void EvolutionStrategy::write_log(int cur_iteration, double reward_mean){
-    struct timeval stopT;
-    gettimeofday(&stopT, NULL);
-    double end_time = stopT.tv_sec + (1.0/1000000) * stopT.tv_usec;
+    double end_time = utils::get_current_time_in_seconds();
 
     std::cout << "cur_iteration " << cur_iteration << ", time: " << end_time - m_start_time << ", average reward " << reward_mean << std::endl;
     m_csv_log_file = fopen("log.csv", "a+");
@@ -34,9 +33,7 @@ void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iter
 
     vector<Weights> noised_weights;
 
-    struct timeval startT;
-    gettimeofday(&startT, NULL);
-    m_start_time = startT.tv_sec + (1.0/1000000) * startT.tv_usec;
+    m_start_time = utils::get_current_time_in_seconds();
     Matrix normalized_retrun;
     Matrix rewards;
 
