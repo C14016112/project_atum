@@ -23,6 +23,7 @@
 #include <sstream>
 #include <cmath>
 #include <fstream>
+#include "matrix.h"
 
 /**
 * The simplest bitboard implementation for 2048 board
@@ -226,79 +227,18 @@ public:
         return out;
     }
 
+    inline Matrix get_observation() const
+    {
+        Matrix observation = arma::zeros<Matrix>(1,16);
+        for(int i = 0; i < 16; ++i){
+            observation(i) = this->at(i);
+        }
+        return observation;
+    }
+
 private:
     value_t raw;
 };
 
-
-/**
-* afterstate wrapper
-*/
-class state {
-public:
-    state() : opcode(-1), after(0), value(0), reward(-1) {}
-    state(const board& b) : opcode(-1), after(b), value(0), reward(-1) {}
-    state(const int& opcode) : opcode(opcode), after(0), value(0), reward(-1) {}
-    state(const state& st) : opcode(st.opcode), after(st.after), value(st.value), reward(st.reward) {}
-    operator board& () { return after; }
-    operator int& () { return reward; }
-
-    bool operator >(const state& st) const { return value > st.value; }
-    int move(const int opcode) {            // return reward
-        reward = after.move(opcode);
-        return reward;
-    }
-
-    int get_reward() { return reward; }
-
-    // int evaluate_score() {
-    //  value = 0;
-    //  for (size_t i = 0; i < feature::list().size(); i++)
-    //      value += feature::list()[i]->estimate(after);
-    //  return value;
-    // }
-
-    board get_board() { return after; }
-
-    bool is_valid() const {
-        if (std::isnan(value)) {
-            std::cerr << "numeric exception" << std::endl;
-            std::exit(1);
-        }
-        return reward != -1;
-    }
-    const char* name() const {
-        static const char* opname[4] = { "up", "right", "down", "left" };
-        return opname[opcode];
-    }
-
-    friend std::ostream& operator <<(std::ostream& out, const state& st) {
-        out << "moving " << st.name() << ", reward = " << st.reward;
-        if (st.is_valid()) {
-            std::cout << ", value = " << st.value << std::endl << st.after;
-        }
-        else {
-            std::cout << " (invalid)" << std::endl;
-        }
-        return out;
-    }
-
-    void PrintState() {
-        for (int i = 0; i < 16; i++) {
-            printf(" %2d ", after.at(i));
-            if (i % 4 == 3)
-                printf("\n");
-        }
-        printf("\n");
-        getchar();
-    }
-private:
-    int opcode;
-    board after;
-    float value;
-    int reward;
-};
-
-typedef board Board;
-typedef state State;
+typedef board Board2048;
 #endif

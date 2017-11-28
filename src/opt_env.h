@@ -1,22 +1,19 @@
 #ifndef __OPT_ENV_H__
 #define __OPT_ENV_H__
 
-#include "matrix.h"
 #include <iostream>
+#include "matrix.h"
 #include "abstract_env.h"
 #include "abstract_agent.h"
 
 class OptEnv : public AbstractEnv{
-    private:
-        // mat problem_weight;
-        uint m_problem_size;
-
     public:
-        double evaluate(Matrix input_matrix);
-        OptEnv(uint problme_size);
-        ~OptEnv();
-        double evaluate_agent(AbstractAgent &ai);
-
+        explicit OptEnv(uint32_t problem_size);
+        double evaluate_agent(const AbstractAgent &agent, bool verbose=false) const override;
+        const Matrix& get_target_matrix() const { return m_target_matrix; }
+    protected:
+        Matrix m_dummy_state;
+        Matrix m_target_matrix;
 };
 
 #endif
