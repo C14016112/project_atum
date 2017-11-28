@@ -8,12 +8,15 @@
 #include "opt_env.h"
 #include "evolution_strategy.h"
 #include "2048_env.h"
+#include "utils.h"
 
 using std::cout;
 using std::endl;
 using std::string;
 
 int main(int argc, char **argv){
+    utils::init_random_seed();
+
     FILE * config_file;
     config_file = fopen("config.txt", "r");
     if (config_file == NULL){
