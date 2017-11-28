@@ -4,6 +4,9 @@
 #include "matrix.h"
 #include "abstract_env.h"
 
+// FitEnv has a black box function f(x) and agent represents another function g(x)
+// Sample `batch_size` points and fit these points to f(x) and g(x) respectively.
+// The FitEnv will provide the summation of |f(x) - g(x)| for all samples and the agent has to find out what's the black box function f(x) is.
 class FitEnv : public AbstractEnv{
     public:
         explicit FitEnv(uint32_t batch_size, uint32_t input_size=2);

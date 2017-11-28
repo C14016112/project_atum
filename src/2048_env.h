@@ -6,6 +6,7 @@
 #include "abstract_env.h"
 #include "2048_board.h"
 
+// Provide the total reward of each 2048 game episode and let the agent figure out the best playing policy.
 class Game2048Env : public AbstractEnv{
 public:
     Game2048Env();

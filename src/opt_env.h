@@ -6,6 +6,10 @@
 #include "abstract_env.h"
 #include "abstract_agent.h"
 
+// The optEnv has a hidden target matrix with shape (1, `problem_size`)
+// The agent guess a matrix and the OptEnv will provide the mean squared error between the guessing and the answer.
+// The agent has to figure out what is the target matrix.
+// OptEnv doesn't nedd an "observation", but we still provide a zero matrix as dummy observation for interface alignment.
 class OptEnv : public AbstractEnv{
     public:
         explicit OptEnv(uint32_t problem_size);

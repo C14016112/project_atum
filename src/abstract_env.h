@@ -12,6 +12,8 @@ class AbstractEnv{
     public:
         AbstractEnv():m_input_size(0), m_output_size(0) {};
         virtual ~AbstractEnv(){};
+        // AbstractEnv do not contain per-game variables.
+        // Every game is held and maintained during the evaluate_agent() lifetime, so we don't need to copy Env anymore.
         virtual double evaluate_agent(const AbstractAgent &agent, bool verbose=false) const = 0;
 
         inline uint32_t get_input_size() const { return m_input_size; }
