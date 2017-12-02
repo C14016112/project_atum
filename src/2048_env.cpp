@@ -22,7 +22,7 @@ double Game2048Env::evaluate_agent(const AbstractAgent &agent, bool verbose/*=fa
             Board2048 copied_board(board);
             int reward = copied_board.move(i);
             if (reward == -1) continue;
-            Matrix agent_prediction = agent.evaluate_action(board.get_observation());
+            Matrix agent_prediction = agent.evaluate_action(copied_board.get_observation());
             double q_value = static_cast<double>(agent_prediction(0,0)) + reward;
             if (q_value > best_q_value){
                 best_q_value = q_value;
