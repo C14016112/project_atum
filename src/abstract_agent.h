@@ -10,7 +10,7 @@ public:
     AbstractAgent(){};
     virtual ~AbstractAgent(){};
 
-    virtual Matrix evaluate_action(const Matrix &observation) = 0; // return an action
+    virtual Matrix evaluate_action(const Matrix &observation) const = 0; // return an action
     virtual void add_weights(const Weights &offsets) = 0;
     inline virtual const Weights& get_weights() const { return m_model_weights; }
 

@@ -13,13 +13,14 @@ DnnAgent::DnnAgent(const DnnAgent& agent) {
 
 DnnAgent::~DnnAgent() {}
 
-Matrix DnnAgent::evaluate_action(const Matrix &observation)
+Matrix DnnAgent::evaluate_action(const Matrix &observation) const
 {
     Matrix result = observation;
     for(int i = 0; i < m_model_weights.get_count()-1; i+=2) {
-        result = result*m_model_weights[i] + m_model_weights[i+1];
+        result = result*m_model_weights[i];
+        result.each_row() += m_model_weights[i+1];
         if(i != m_model_weights.get_count()-2)
-            result = relu(result);
+            result = DnnAgent::relu(result);
     }
     return result;
 }
@@ -82,7 +83,7 @@ void DnnAgent::load_config_layer_(const std::string &filename,
     }
 }
 
-Matrix DnnAgent::relu(Matrix matrix) {
+Matrix DnnAgent::relu(const Matrix &matrix) {
     Matrix relu_mat = matrix;
     for(int i = 0; i < relu_mat.size(); i++) {
         if(matrix(i) < 0) relu_mat(i) = 0;

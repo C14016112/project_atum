@@ -1,4 +1,5 @@
 #include "evolution_strategy.h"
+#include "utils.h"
 
 EvolutionStrategy::EvolutionStrategy(uint thread_num, uint pop_num, double param_sigma, double param_alpha){
     m_thread_number = thread_num;
@@ -8,7 +9,7 @@ EvolutionStrategy::EvolutionStrategy(uint thread_num, uint pop_num, double param
 
     m_csv_log_file = fopen("log.csv", "w");
     if (m_csv_log_file == NULL){
-        cout << "[ERROR] fail to open log.csv." << endl;
+        std::cout << "[ERROR] fail to open log.csv." << std::endl;
         exit(EXIT_FAILURE);
     }
     fprintf(m_csv_log_file, "Time, Iteration, average_reward\n");
@@ -20,11 +21,9 @@ EvolutionStrategy::~EvolutionStrategy(){
 }
 
 void EvolutionStrategy::write_log(int cur_iteration, double reward_mean){
-    struct timeval stopT;
-    gettimeofday(&stopT, NULL);
-    double end_time = stopT.tv_sec + (1.0/1000000) * stopT.tv_usec;
+    double end_time = utils::get_current_time_in_seconds();
 
-    cout << "cur_iteration " << cur_iteration << ", time: " << end_time - m_start_time << ", average reward " << reward_mean << endl;
+    std::cout << "cur_iteration " << cur_iteration << ", time: " << end_time - m_start_time << ", average reward " << reward_mean << std::endl;
     m_csv_log_file = fopen("log.csv", "a+");
     fprintf(m_csv_log_file, "%f, %d, %f\n", end_time-m_start_time, cur_iteration, reward_mean);
     fclose(m_csv_log_file);
@@ -32,12 +31,9 @@ void EvolutionStrategy::write_log(int cur_iteration, double reward_mean){
 
 void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iteration){
 
-    Game2048Env* envs = new Game2048Env[m_population_number];
     vector<Weights> noised_weights;
 
-    struct timeval startT;
-    gettimeofday(&startT, NULL);
-    m_start_time = startT.tv_sec + (1.0/1000000) * startT.tv_usec;
+    m_start_time = utils::get_current_time_in_seconds();
     Matrix normalized_retrun;
     Matrix rewards;
 
@@ -50,7 +46,7 @@ void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iter
 
         #pragma omp parallel for num_threads(m_thread_number)
         for(int j = 0; j < m_population_number; j++){
-            if(i == 0 && j == 0) cout << "thread number: " << omp_get_num_threads() << endl;
+            if(i == 0 && j == 0) std::cout << "thread number: " << omp_get_num_threads() << std::endl;
             DnnAgent noised_ai(*ai);
 
             noised_weights[j] = Weights(ai->get_weights(), Weights::GAUSSIAN);
@@ -61,7 +57,7 @@ void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iter
 
             noised_ai.add_weights(noised_weights[j]);
 
-            double reward = envs[j].evaluate_agent(noised_ai);
+            double reward = problem.evaluate_agent(noised_ai);
             rewards(j) = reward;
         }
 
@@ -73,7 +69,6 @@ void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iter
 
         // update
         for(int j = 0; j < m_population_number; j++){
-            // noised_weights[j].multiply_scalar(m_alpha*normalized_retrun[j]/(m_population_number*m_sigma*m_sigma));
             noised_weights[j] *= m_alpha*normalized_retrun[j]/(m_population_number*m_sigma*m_sigma);
             ai->add_weights(noised_weights[j]);
         }
@@ -81,8 +76,6 @@ void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iter
 
         if(i % 10 == 0 && i > 0) ai->save_agent();
     }
-
-    delete [] envs;
 
 }
 

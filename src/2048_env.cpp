@@ -1,66 +1,49 @@
 ﻿#include "2048_env.h"
+#include <limits>
 
-Game2048Env::Game2048Env(){
-    __asm__ __volatile__("rdtsc" : "=a" (m_seed));
-    std::srand(m_seed);
+Game2048Env::Game2048Env()
+{
     m_input_size = 16;
     m_output_size = 1;
 }
 
-Game2048Env::~Game2048Env(){
-
-}
-
-double Game2048Env::evaluate_agent(AbstractAgent& agent){
-    // play an episode
+double Game2048Env::evaluate_agent(const AbstractAgent &agent, bool verbose/*=false*/) const
+{
     int score = 0;
-    m_board.init();
+    bool is_terminate = false;
 
-    while (true) {
-        // try to find a best move
-        State current_state(m_board);
+    Board2048 board;
+    board.init();
 
-
-        //current_state.PrintState();
-        double best_val = -10000000;
-        int best_move = 0;
-        for(int i = 1; i < 4; i++){
-            State tmp_state = current_state;
-            int reward = tmp_state.move(i);
+    while (is_terminate == false) {
+        double best_q_value = std::numeric_limits<double>::lowest();
+        int best_move = -1;
+        for(int i = 0; i < 4; i++){
+            Board2048 copied_board(board);
+            int reward = copied_board.move(i);
             if (reward == -1) continue;
-            mat A = zeros(16);
-            for(int j = 0; j < 16; j++) A(j) = tmp_state.get_board().at(j);
-            double val = (double)agent.evaluate_action(A.t())(0) + reward;
-            if (val > best_val){
-                best_val = val;
+            Matrix agent_prediction = agent.evaluate_action(board.get_observation());
+            double q_value = static_cast<double>(agent_prediction(0,0)) + reward;
+            if (q_value > best_q_value){
+                best_q_value = q_value;
                 best_move = i;
             }
         }
 
-        State best_next_state = current_state;
-        best_next_state.move(best_move);
-
-        if (best_next_state.get_reward() != -1) {
-            m_board = best_next_state.get_board();
-            score += best_next_state.get_reward();
-            m_board.add_random_tile();
+        if (best_move != -1) {
+            score += board.move(best_move);
+            board.add_random_tile();
         }
-        // game over
-        else
-            break;
+        else{
+            is_terminate = true;
+        }
     }
-#ifdef DEBUG
-    int max_tile = 0;
-    State tmp_state(m_board);
-    for(int i = 0; i < 16; ++i) if(m_board.at(i) > max_tile) max_tile = m_board.at(i);
-    std::cout << "max tile: " << (2<<max_tile) << " " << score << std::endl;
-#endif
-    return (double)score;
-}
 
-mat Game2048Env::get_observation(){
+    if (verbose){
+        int max_tile = 0;
+        for(int i = 0; i < 16; ++i) if(board.at(i) > max_tile) max_tile = board.at(i);
+        std::cout << "max tile: " << (2<<max_tile) << " , score: " << score << std::endl;
+    }
 
-}
-void Game2048Env::do_action(mat action){
-
+    return static_cast<double>(score);
 }

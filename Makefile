@@ -1,7 +1,7 @@
 CC = g++
 SOURCE = ./src
 OBJDIR = ./obj
-OBJ = weight.o 2048_env.o opt_env.o dnn_agent.o evolution_strategy.o main.o
+OBJ = weight.o 2048_env.o opt_env.o dnn_agent.o evolution_strategy.o fit_env.o main.o
 OBJS = $(addprefix $(OBJDIR)/, $(OBJ))
 
 OPT_DEGREE = -O3
@@ -31,6 +31,8 @@ $(OBJDIR)/weight.o: weight.cpp weight.h
 $(OBJDIR)/2048_env.o: 2048_env.cpp 2048_env.h
 	$(CC) -c $(CFLAGS) $< -o $@
 $(OBJDIR)/opt_env.o: opt_env.cpp opt_env.h abstract_env.h
+	$(CC) -c $(CFLAGS) $< -o $@
+$(OBJDIR)/fit_env.o: fit_env.cpp fit_env.h abstract_env.h
 	$(CC) -c $(CFLAGS) $< -o $@
 $(OBJDIR)/dnn_agent.o: dnn_agent.cpp dnn_agent.h abstract_agent.h
 	$(CC) -c $(CFLAGS) $< -o $@

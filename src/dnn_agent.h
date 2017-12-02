@@ -19,12 +19,12 @@ public:
     DnnAgent& operator=(const DnnAgent &);
     virtual void copy_agent(DnnAgent *new_agent);
     void build_model();
-    virtual Matrix evaluate_action(const Matrix &observation);
+    virtual Matrix evaluate_action(const Matrix &observation) const override;
 
     virtual void add_weights(const Weights &offsets);
 
     virtual void dump_config(const std::string &filename) const;
-    Matrix relu(Matrix);
+    static Matrix relu(const Matrix &matrix);
 
 private:
     void load_config_layer_(const std::string &filename, std::vector<int> &layers);
