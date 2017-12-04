@@ -24,6 +24,7 @@
 #include <cmath>
 #include <fstream>
 #include "matrix.h"
+#include "rand_num_generator.h"
 
 /**
 * The simplest bitboard implementation for 2048 board
@@ -46,8 +47,8 @@ class board {
 public:
     typedef unsigned long long value_t;
 
-    inline board(const value_t& raw = 0) : raw(raw) {}
-    inline board(const board& b) : raw(b.raw) {}
+    inline board(const value_t& raw = 0) : raw(raw), m_rand_num_generator() {}
+    inline board(const board& b) : raw(b.raw), m_rand_num_generator() {}
     inline operator value_t&() { return raw; }
 
     inline int  fetch(const int& i) const { return ((raw >> (i << 4)) & 0xffff); }          // fetch row
@@ -209,7 +210,7 @@ public:
                 space[num++] = i;
             }
         if (num)
-            set(space[rand() % num], rand() % 10 ? 1 : 2);
+            set(space[m_rand_num_generator.get_number() % num], m_rand_num_generator.get_number() % 10 ? 1 : 2);
     }
 
     friend std::ostream& operator <<(std::ostream& out, const board& b) {
@@ -238,6 +239,7 @@ public:
 
 private:
     value_t raw;
+    RandNumGenerator m_rand_num_generator;
 };
 
 typedef board Board2048;
