@@ -42,23 +42,29 @@ void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iter
         noised_weights.push_back(Weights(ai->get_weights(), Weights::GAUSSIAN));
 
     for (int i = 0; i < max_iteration; i++){
-        rewards = zeros(m_population_number);
+        rewards = zeros(m_population_number*2);
 
         #pragma omp parallel for num_threads(m_thread_number)
         for(int j = 0; j < m_population_number; j++){
             if(i == 0 && j == 0) std::cout << "thread number: " << omp_get_num_threads() << std::endl;
-            DnnAgent noised_ai(*ai);
-
             noised_weights[j] = Weights(ai->get_weights(), Weights::GAUSSIAN);
-            // noised_weights[j].multiply_scalar(m_sigma);
-            // noised_weights[j] = noised_weights[j];
-            // noised_weights[j] *= 1.0;
             noised_weights[j] *= m_sigma;
 
+            DnnAgent noised_ai(*ai);
             noised_ai.add_weights(noised_weights[j]);
 
             double reward = problem.evaluate_agent(noised_ai);
-            rewards(j) = reward;
+            
+            noised_weights[j] *= -1;
+            DnnAgent mirror_ai(*ai);
+            mirror_ai.add_weights(noised_weights[j]);
+
+            double mirror_reward = problem.evaluate_agent(mirror_ai);
+
+            noised_weights[j] *= -1;
+
+            rewards(2*j) = reward;
+            rewards(2*j+1) = mirror_reward;
         }
 
         double reward_mean = mean(mean(rewards));
@@ -69,7 +75,8 @@ void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iter
 
         // update
         for(int j = 0; j < m_population_number; j++){
-            noised_weights[j] *= m_alpha*normalized_retrun[j]/(m_population_number*m_sigma*m_sigma);
+            noised_weights[j] *= m_alpha*(normalized_retrun[2*j]-normalized_retrun[2*j+1])/(m_population_number*2*m_sigma*m_sigma);
+            //noised_weights[j] *= m_alpha*(normalized_retrun[2*j])/(m_population_number*m_sigma*m_sigma);
             ai->add_weights(noised_weights[j]);
         }
 
