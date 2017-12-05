@@ -37,10 +37,6 @@ void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iter
     Matrix normalized_return;
     Matrix rewards;
 
-    // #pragma omp parallel for num_threads(m_thread_number)
-    //for(int i = 0; i < m_population_number; i++)
-    //    noised_weights.push_back(Weights(ai->get_weights(), Weights::GAUSSIAN));
-
     for (int i = 1; i <= max_iteration; i++){
         rewards = zeros(m_population_number*2);
 
