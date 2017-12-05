@@ -31,17 +31,17 @@ void EvolutionStrategy::write_log(int cur_iteration, double reward_mean){
 
 void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iteration){
 
-    vector<Weights> noised_weights;
+    vector<Weights> noised_weights(m_population_number);
 
     m_start_time = utils::get_current_time_in_seconds();
-    Matrix normalized_retrun;
+    Matrix normalized_return;
     Matrix rewards;
 
     // #pragma omp parallel for num_threads(m_thread_number)
-    for(int i = 0; i < m_population_number; i++)
-        noised_weights.push_back(Weights(ai->get_weights(), Weights::GAUSSIAN));
+    //for(int i = 0; i < m_population_number; i++)
+    //    noised_weights.push_back(Weights(ai->get_weights(), Weights::GAUSSIAN));
 
-    for (int i = 0; i < max_iteration; i++){
+    for (int i = 1; i <= max_iteration; i++){
         rewards = zeros(m_population_number*2);
 
         #pragma omp parallel for num_threads(m_thread_number)
@@ -54,7 +54,7 @@ void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iter
             noised_ai.add_weights(noised_weights[j]);
 
             double reward = problem.evaluate_agent(noised_ai);
-            
+
             noised_weights[j] *= -1;
             DnnAgent mirror_ai(*ai);
             mirror_ai.add_weights(noised_weights[j]);
@@ -70,13 +70,13 @@ void EvolutionStrategy::train(AbstractEnv & problem, DnnAgent* ai, uint max_iter
         double reward_mean = mean(mean(rewards));
         Matrix reward_m = stddev(rewards);
         double reward_std = reward_m(0,0);
-        normalized_retrun = (rewards - reward_mean)/reward_std;
+        normalized_return = (rewards - reward_mean)/reward_std;
         if(i%10 == 0) write_log(i, reward_mean);
 
         // update
         for(int j = 0; j < m_population_number; j++){
-            noised_weights[j] *= m_alpha*(normalized_retrun[2*j]-normalized_retrun[2*j+1])/(m_population_number*2*m_sigma*m_sigma);
-            //noised_weights[j] *= m_alpha*(normalized_retrun[2*j])/(m_population_number*m_sigma*m_sigma);
+            noised_weights[j] *= m_alpha*(normalized_return[2*j]-normalized_return[2*j+1])/(m_population_number*2*m_sigma*m_sigma);
+            //noised_weights[j] *= m_alpha*(normalized_return[2*j])/(m_population_number*m_sigma*m_sigma);
             ai->add_weights(noised_weights[j]);
         }
 
