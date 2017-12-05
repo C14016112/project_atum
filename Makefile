@@ -1,5 +1,6 @@
 CC = g++
 SOURCE = ./src
+INCLUDE = ./include
 OBJDIR = ./obj
 OBJ = weight.o 2048_env.o opt_env.o dnn_agent.o evolution_strategy.o fit_env.o main.o
 OBJS = $(addprefix $(OBJDIR)/, $(OBJ))
@@ -8,21 +9,22 @@ OPT_DEGREE = -O3
 COMMON_FLAGS = -fopenmp
 COMPILE_FLAGS = -std=c++11
 LDFLAGS = -larmadillo
-CFLAGS = $(COMPILE_FLAGS) $(OPT_DEGREE) $(COMMON_FLAGS)
+CFLAGS = $(COMPILE_FLAGS) $(OPT_DEGREE) $(COMMON_FLAGS) -I$(INCLUDE)
 OFLAGS = $(COMMON_FLAGS) $(LDFLAGS)
 EXEC = train
 
 # Define some search path
 VPATH = $(SOURCE)
 vpath
-vpath %.c %.h $(SOURCE)
+vpath %.c $(SOURCE)
+vpath %.h $(INCLUDE)
+
+.PHONY: all
+all: obj $(EXEC)
 
 .PHONY: debug
 debug: COMPILE_FLAGS += -DDEBUG -g
 debug: all
-
-.PHONY: all
-all: obj $(EXEC)
 
 $(EXEC): $(OBJS)
 	$(CC) $(OBJS) $(OFLAGS) -o $@
