@@ -22,5 +22,9 @@ private:
     double m_alpha;
     double m_start_time;
     FILE * m_csv_log_file;
+    vector<double> utility_table;
+
+    void create_utility_table();
+    vector<std::pair<int, double>> sort_id_reward_vector( vector<std::pair<int,double>> );
 };
 #endif
