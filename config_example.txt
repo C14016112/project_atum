@@ -1,7 +1,7 @@
-thread_number : 10
-max_iteration : 100000
-population : 100
-model : 256 256 256
+thread_number : 1
+max_iteration : 100
+population : 120
+model : 16 16 16
 is_load_model : 0
 es_sigma : 0.1
 es_alpha : 0.01
